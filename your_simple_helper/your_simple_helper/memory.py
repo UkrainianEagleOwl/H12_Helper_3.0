@@ -1,4 +1,5 @@
 import re
+import json
 from datetime import datetime
 from collections import UserDict
 
@@ -23,6 +24,19 @@ class AddressBook(UserDict):
                 if i == aRecord:
                     return (aRecord.user_name.value, aRecord)
         return None
+
+    def find_users(self, search_string):
+            # Find users whose name or phone number matches the search string
+        matching_users = []
+        for record in self.data.values():
+            if record.user_name.value.find(search_string) != -1:
+                matching_users.append(record)
+            else:
+                for phone in record.user_phones:
+                    if phone.value.find(search_string) != -1:
+                        matching_users.append(record)
+                        break
+        return matching_users
     
     def __iter__(self):
         # Generator function to yield representations of N records
@@ -36,6 +50,35 @@ class AddressBook(UserDict):
                     break
 
         return record_generator()
+    
+    def to_dict(self):
+        return {
+            'data': {
+                name: record.to_dict() for name, record in self.data.items()
+            }
+        }
+    
+    def from_dict(cls, data):
+        address_book = cls()
+        records = [Record.from_dict(record_data) for record_data in data['data'].values()]
+        for record in records:
+            address_book.add_record(record)
+        return address_book
+    
+    def save_to_json(self, filename):
+        with open(filename, 'w') as file:
+            json.dump(self.to_dict(), file, indent=4)
+
+    @classmethod
+    def load_from_json(cls, filename):
+        with open(filename, 'r') as file:
+            data = json.load(file)
+        address_book = cls()
+        records = [Record.from_dict(record_data)
+                   for record_data in data['data'].values()]
+        for record in records:
+            address_book.add_record(record)
+        return address_book
 
 
 class Field():
@@ -132,9 +175,26 @@ class Record():
             return self.user_name.value == other.user_name.value
         return False
     
-    # def __str__(self):
-    #     return '|{:^8}|{:^10}|{:^15}|'.format(self.user_name,self.user_birthday,self.user_phones)
+    def to_dict(self):
+        return {
+            'user_name': self.user_name.value,
+            'user_phones': [phone.value for phone in self.user_phones],
+            'user_birthday': self.user_birthday.isoformat() if self.user_birthday else None
+            }
 
+    @classmethod
+    def from_dict(cls, data):
+        print(data)
+        name = Name(data.get('user_name'))
+        phones_data = data.get('user_phones', [])
+        phones = [Phone(phone_number) for phone_number in phones_data]
+        birthday = datetime.fromisoformat(
+            data['user_birthday']) if data['user_birthday'] else None
+        record = Record(name, birthday =  birthday)
+        for phone in phones:
+            record.add_phone(phone)
+        return record
+    
     def add_phone(self, aPhone):
         # Method to add a phone to the record
         if isinstance(aPhone, str):

@@ -1,5 +1,7 @@
 import memory
 import unittest
+import tempfile
+import os
 from datetime import datetime
 
 def Create_simple_record(name = 'Alex'):
@@ -7,6 +9,66 @@ def Create_simple_record(name = 'Alex'):
 
 
 class AddressBookTest(unittest.TestCase):
+    def setUp(self):
+    # Create a sample address book with some records
+        self.address_book = memory.AddressBook()
+        record1 = memory.Record("John Doe", "+380(50)543-5-391", datetime(year=1970, month=11, day=7))
+        record2 = memory.Record("Jane Smith", "380(67)7778-77-776",datetime(year=2000, month=1, day=1))
+        record3 = memory.Record("Mike Johnson", "+380(50)460-5-222", datetime(year=1980, month=3, day=29))
+
+        self.address_book.add_record(record1)
+        self.address_book.add_record(record2)
+        self.address_book.add_record(record3)
+
+    def test_find_users(self):
+        search_string = "John"
+        matching_users = self.address_book.find_users(search_string)
+        self.assertEqual(len(matching_users), 2)
+        self.assertEqual(matching_users[0].user_name.value, "John Doe")
+        self.assertEqual(matching_users[1].user_name.value, "Mike Johnson")
+
+        search_string = "222"
+        matching_users = self.address_book.find_users(search_string)
+        self.assertEqual(len(matching_users), 1)
+        self.assertEqual(matching_users[0].user_name.value, "Mike Johnson")
+
+        search_string = "Smith"
+        matching_users = self.address_book.find_users(search_string)
+        self.assertEqual(len(matching_users), 1)
+        self.assertEqual(matching_users[0].user_name.value, "Jane Smith")
+
+        search_string = "999"
+        matching_users = self.address_book.find_users(search_string)
+        self.assertEqual(len(matching_users), 0)
+
+    def test_save_load_from_json(self):
+        # Create a temporary file to save the JSON data
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_filename = temp_file.name
+
+        # Save the address book to the temporary file
+        self.address_book.save_to_json(temp_filename)
+
+        # Check if the file exists
+        self.assertTrue(os.path.isfile(temp_filename))
+
+        # Load the address book from the temporary file
+        loaded_address_book = memory.AddressBook.load_from_json(temp_filename)
+
+        # Check if the loaded address book is an instance of AddressBook
+        self.assertIsInstance(loaded_address_book, memory.AddressBook)
+
+        # Check if the loaded address book has the same records
+        self.assertEqual(len(loaded_address_book.data),
+                         len(self.address_book.data))
+        for key, value in self.address_book.data.items():
+            self.assertIn(key, loaded_address_book.data)
+            self.assertEqual(value, loaded_address_book.data[key])
+
+        # Delete the temporary file
+        os.remove(temp_filename)
+
+
     def test_add_record(self):
         address_book = memory.AddressBook()
         record = Create_simple_record()
