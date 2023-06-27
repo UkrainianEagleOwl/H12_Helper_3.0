@@ -68,6 +68,30 @@ class AddressBookTest(unittest.TestCase):
         # Delete the temporary file
         os.remove(temp_filename)
 
+    def test_save_load_from_bytes(self):
+            # Create an instance of AddressBook
+        address_book = memory.AddressBook()
+        record1 = memory.Record(
+            "John Doe", "+380(50)543-5-391", datetime(year=1970, month=11, day=7))
+        record2 = memory.Record(
+            "Jane Smith", "380(67)7778-77-776", datetime(year=2000, month=1, day=1))
+        record3 = memory.Record(
+            "Mike Johnson", "+380(50)460-5-222", datetime(year=1980, month=3, day=29))
+
+        self.address_book.add_record(record1)
+        self.address_book.add_record(record2)
+        self.address_book.add_record(record3)
+
+        # Save the AddressBook to bytes
+        address_book_bytes = address_book.save_to_bytes()
+
+        # Load the AddressBook from bytes
+        loaded_address_book = memory.AddressBook.load_from_bytes(
+            address_book_bytes)
+
+        # Check if the loaded AddressBook is equal to the original one
+        self.assertEqual(loaded_address_book, address_book)
+
 
     def test_add_record(self):
         address_book = memory.AddressBook()

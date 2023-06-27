@@ -1,5 +1,7 @@
-from commands import get_command, END_STRING
+from commands import get_command, END_STRING,greetings
 from string_parser import parse_the_string #, command_work_tulpe
+
+
 
 
 def get_command_input(Input_message=''):
@@ -9,6 +11,7 @@ def get_command_input(Input_message=''):
     return Input_value
 
 def main():
+    print(greetings)
     while True:
         input_string = get_command_input()
         work_tuple = parse_the_string(input_string)

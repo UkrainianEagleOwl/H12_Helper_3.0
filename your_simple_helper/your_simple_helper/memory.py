@@ -1,5 +1,6 @@
 import re
 import json
+import pickle
 from datetime import datetime
 from collections import UserDict
 
@@ -38,18 +39,18 @@ class AddressBook(UserDict):
                         break
         return matching_users
     
-    def __iter__(self):
-        # Generator function to yield representations of N records
-        def record_generator():
-            N = 5  # Number of records to yield in each iteration
-            count = 0
-            for record in self.data.values():
-                yield repr(record)
-                count += 1
-                if count >= N:
-                    break
+    # def __iter__(self):
+    #     # Generator function to yield representations of N records
+    #     def record_generator():
+    #         N = 5  # Number of records to yield in each iteration
+    #         count = 0
+    #         for record in self.data.values():
+    #             yield repr(record)
+    #             count += 1
+    #             if count >= N:
+    #                 break
 
-        return record_generator()
+    #     return record_generator()
     
     def to_dict(self):
         return {
@@ -79,6 +80,15 @@ class AddressBook(UserDict):
         for record in records:
             address_book.add_record(record)
         return address_book
+    
+    def save_to_bytes(self):
+            # Serialize the AddressBook object to bytes using pickle
+        return pickle.dumps(self)
+    
+    @staticmethod
+    def load_from_bytes(data):
+        # Deserialize the bytes data and return the AddressBook object
+        return pickle.loads(data)
 
 
 class Field():
@@ -107,6 +117,9 @@ class Name(Field):
             self._value = new_value
         else:
             raise SetterValueIncorrect('Only string accepted')
+        
+    def __str__(self) -> str:
+        return f'Name: {self.value}'
 
 
 class Phone(Field):
@@ -131,7 +144,9 @@ class Phone(Field):
             self._value = new_value
         else:
             raise SetterValueIncorrect('Only correct type of phone numbers accepted')
-
+        
+    def __str__(self):
+        return f'Phone: {self.value}'
 
 class Birthday(Field):
     # Class representing a birthday field, which is a subclass of Field
@@ -153,6 +168,9 @@ class Birthday(Field):
                 raise SetterValueIncorrect('Incorrect string type of data')
         else:
             raise SetterValueIncorrect('Only string data or datetime accepted')
+    
+    def __str__(self) -> str:
+        return f'Birthday: {self.value.strftime()}'
 
 
 class Record():
@@ -175,6 +193,12 @@ class Record():
             return self.user_name.value == other.user_name.value
         return False
     
+
+    def __str__(self):
+        phone_numbers = ' | '.join(str(phone) for phone in self.user_phones)
+        return '|{:^10}|\n|{:^20}| {:^10}\n'.format(str(self.user_name), phone_numbers, str(self.user_birthday) if self.user_birthday else '')
+
+    
     def to_dict(self):
         return {
             'user_name': self.user_name.value,
@@ -184,7 +208,6 @@ class Record():
 
     @classmethod
     def from_dict(cls, data):
-        print(data)
         name = Name(data.get('user_name'))
         phones_data = data.get('user_phones', [])
         phones = [Phone(phone_number) for phone_number in phones_data]
