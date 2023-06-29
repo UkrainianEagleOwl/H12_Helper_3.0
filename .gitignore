@@ -1,3 +1,7 @@
 
 your_simple_helper/your_simple_helper/__pycache__/commands.cpython-310.pyc
 your_simple_helper/your_simple_helper/__pycache__/string_parser.cpython-310.pyc
+your_simple_helper/your_simple_helper/my_secrets.py
+*.pyc
+*.pyc
+your_simple_helper/your_simple_helper/__pycache__/memory.cpython-310.pyc

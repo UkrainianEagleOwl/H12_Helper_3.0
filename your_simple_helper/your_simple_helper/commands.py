@@ -1,54 +1,20 @@
 
 
 import collections
-import sys
-from memory import AddressBook,Record
-from pathlib import Path
+from save_load_book import load_address_book, save_address_book
+from memory import AddressBook, Record
+from open_ai_input_assistent import analize_input_activate_func
 
 
 END_STRING = "Good bye!"
-
 address_book = AddressBook()
 Person = collections.namedtuple('Person',['name','phone'])
 
-#----------------------------------------
-# Save and Load Address book when application begin and end work
-
-
-def save_address_book(address_book):
-    # Get the path of the executable file
-    exe_path = Path(sys.executable)
-
-    # Create the "save" folder if it doesn't exist
-    save_folder = exe_path.parent / "save"
-    save_folder.mkdir(exist_ok=True)
-
-    # Construct the file path for saving the AddressBook
-    file_path = save_folder / "address_book.json"
-
-    # Save the AddressBook to the file
-    address_book.save_to_json(file_path)
-
-def load_address_book():
-    # Get the path of the executable file
-    exe_path = Path(sys.executable)
-
-    # Create the "save" folder if it doesn't exist
-    save_folder = exe_path.parent / "save"
-    if save_folder.exists():
-        # Construct the file path for loading the AddressBook
-        file_path = save_folder / "address_book.json"
-
-        # Check if the file exists
-        if file_path.exists():
-            # Load the AddressBook from the file
-            address_book = AddressBook.load_from_json(file_path)
-            return address_book
-        else:
-            return None
-    else:
-        return None
-
+def get_command_input(Input_message=''):
+    Input_value = None
+    while Input_value is None:
+        Input_value = input(f'{Input_message} ')
+    return Input_value
 
 def input_error(func):
         def inner(name, phone):
@@ -62,22 +28,23 @@ def input_error(func):
         
 def greetings(*arg):
     loaded_book = load_address_book()
+    s = ''
     if loaded_book:
         global address_book 
         address_book = loaded_book
         s = 'Book was successfully load.'
 
-    return "Hello Master! How can I help you today?" + s
+    return analize_input_activate_func(command=commands[0]) + s
 
 @input_error
 def add_new_contact(*arg):
     address_book.add_record(Record(arg[0].capitalize(),arg[1]))
-    return 'Contact added.'
+    #return 'Contact added.'
 
 @input_error
 def change_exist_contact(*arg):
     address_book.get(arg[0]).change_n_phone(0, arg[1])
-    return f"Contact's phone was changed."
+    #return f"Contact's phone was changed."
 
 @input_error
 def show_phone(*arg):
@@ -89,18 +56,53 @@ def show_all(*arg):
 def ending(*arg):
     global address_book
     save_address_book(address_book)
-    return END_STRING + 'Book was successfully save.'
+    return analize_input_activate_func(command=commands[5]) + 'Book was successfully save.'
 
-COMMANDS = {
-    'hello' : greetings,
-    'add' : add_new_contact,
-    'change' : change_exist_contact,
-    'phone' : show_phone,
-    'show all': show_all,
-    'good bye': ending,
-    'close': ending,
-    'exit' : ending
-}
+# Define available commands
+commands = [
+    {
+        "id": 1,
+        "name": "greet",
+        "description": "Greet the user",
+        "arguments": [],
+        "func":greetings
+    },
+    {
+        "id": 2,
+        "name": "new",
+        "description": "Add a new contact",
+        "arguments": ["name", "phone"],
+        "func":add_new_contact
+    },
+    {
+        "id": 3,
+        "name": "change",
+        "description": "Change an existing contact",
+        "arguments": ["name"],
+        "func":change_exist_contact
+    },
+    {
+        "id": 4,
+        "name": "phone",
+        "description": "Show the phone number of a contact",
+        "arguments": ["name"],
+        "func":show_phone
+    },
+    {
+        "id": 5,
+        "name": "show all",
+        "description": "Show all contacts",
+        "arguments": [],
+        "func":show_all
+    },
+    {
+        "id": 6,
+        "name": "exit",
+        "description": "End the conversation",
+        "arguments": [],
+        "func":ending
+    }
+    ]
 
-def get_command(command):
-    return COMMANDS[command]
+def get_command(id):
+    return list(filter(lambda cmd: cmd["id"] == id, commands))[0]["func"]
