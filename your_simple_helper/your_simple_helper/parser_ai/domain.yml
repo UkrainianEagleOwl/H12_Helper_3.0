@@ -1,0 +1,52 @@
+version: '2.0'
+
+intents:
+  - greet
+  - new
+  - change
+  - phone
+  - show all
+  - exit
+
+entities:
+  - name
+  - phone
+  - birthday
+
+# slots:
+#   name:
+#     type: text
+#     initial_value: null
+#     mappings:
+#       - type: from_entity
+#         entity: name
+#   phone:
+#     type: text
+#     initial_value: null
+#     mappings:
+#       - type: from_entity
+#         entity: phone
+#   birthday:
+#     type: text
+#     initial_value: null
+#     mappings:
+#       - type: from_entity
+#         entity: birthday
+
+actions:
+  - greet
+  - add_new_contact
+  - change_exist_contact
+  - show_phone
+  - show_all
+  - ending
+
+responses:
+  utter_greet:
+    - text: "Hello! How can I assist you today?"
+  utter_goodbye:
+    - text: "Goodbye! Have a great day!"
+
+templates:
+  utter_show_phone:
+    - "The phone number of {name} is {phone}."

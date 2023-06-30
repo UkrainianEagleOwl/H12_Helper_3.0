@@ -1,0 +1,33 @@
+version: "2.0"
+
+stories:
+  - story: Greet and Add New Contact
+    steps:
+      - intent: greet
+      - action: greet
+      - intent: new
+      - action: add_new_contact
+      - intent: ending
+      - action: ending
+
+  - story: Show Phone Number
+    steps:
+      - intent: greet
+      - action: greet
+      - intent: show all
+      - action: show_all
+      - intent: phone
+      - action: show_phone
+      - intent: ending
+      - action: ending
+
+  - story: Change Phone Number
+    steps:
+      - intent: greet
+      - action: greet
+      - intent: change
+      - action: change_exist_contact
+      - intent: phone
+      - action: show_phone
+      - intent: ending
+      - action: ending

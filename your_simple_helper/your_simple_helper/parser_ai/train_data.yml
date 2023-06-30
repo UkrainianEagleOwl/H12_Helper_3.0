@@ -1,0 +1,80 @@
+version: "2.0"
+
+nlu:
+  - intent: greet
+    examples: |
+      - Hello
+      - Hi
+      - Good morning
+      - Hey there
+      - Greetings
+      - Howdy
+      - Salutations
+      - What's up?
+      - Hi, how can I assist you?
+      - Good to see you
+
+  - intent: new
+    examples: |
+      - Add a new contact
+      - Create a new contact
+      - Add contact details
+      - New contact entry
+      - Register a new contact
+      - I want to add someone to my contacts
+      - Can you help me add a contact?
+      - Add a person's information
+      - Insert a new contact
+      - Record a new contact
+
+  - intent: change
+    examples: |
+      - Change phone in an existing contact
+      - Update contact information
+      - Modify existing contact details
+      - Edit contact entry
+      - Alter contact phone number
+      - Update phone number for a contact
+      - Change contact's address
+      - Modify contact's email
+      - Update contact's name
+      - Edit an existing contact
+
+  - intent: phone
+    examples: |
+      - Show the phone number of a contact
+      - Display contact's phone
+      - Get contact phone details
+      - Retrieve phone number
+      - View phone info
+      - What's the phone number?
+      - Show me the contact's phone
+      - Can you give me the contact's phone?
+      - Display the phone number
+      - Get phone details for a contact
+
+  - intent: show all
+    examples: |
+      - Show all contacts
+      - Display all contact entries
+      - List all contacts
+      - View entire contact list
+      - Retrieve all contact details
+      - Show me my contact list
+      - List all my saved contacts
+      - Display the complete contact list
+      - Get all contact information
+      - Show me the full list of contacts
+
+  - intent: ending
+    examples: |
+      - Exit
+      - Quit
+      - Close
+      - Terminate
+      - End
+      - Bye
+      - Goodbye
+      - Stop
+      - Finish
+      - I'm done

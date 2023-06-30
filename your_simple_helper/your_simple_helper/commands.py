@@ -69,35 +69,35 @@ commands = [
     },
     {
         "id": 2,
-        "name": "new",
+        "name": "add_new_contact",
         "description": "Add a new contact",
         "arguments": ["name", "phone"],
         "func":add_new_contact
     },
     {
         "id": 3,
-        "name": "change",
+        "name": "change_exist_contact",
         "description": "Change an existing contact",
         "arguments": ["name"],
         "func":change_exist_contact
     },
     {
         "id": 4,
-        "name": "phone",
+        "name": "show_phone",
         "description": "Show the phone number of a contact",
         "arguments": ["name"],
         "func":show_phone
     },
     {
         "id": 5,
-        "name": "show all",
+        "name": "show_all",
         "description": "Show all contacts",
         "arguments": [],
         "func":show_all
     },
     {
         "id": 6,
-        "name": "exit",
+        "name": "ending",
         "description": "End the conversation",
         "arguments": [],
         "func":ending
