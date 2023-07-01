@@ -1,4 +1,4 @@
-version: "2.0"
+version: '3.4'
 
 nlu:
   - intent: greet
@@ -14,7 +14,7 @@ nlu:
       - Hi, how can I assist you?
       - Good to see you
 
-  - intent: new
+  - intent: add_new_contact
     examples: |
       - Add a new contact
       - Create a new contact
@@ -27,7 +27,7 @@ nlu:
       - Insert a new contact
       - Record a new contact
 
-  - intent: change
+  - intent: change_exist_contact
     examples: |
       - Change phone in an existing contact
       - Update contact information
@@ -40,7 +40,7 @@ nlu:
       - Update contact's name
       - Edit an existing contact
 
-  - intent: phone
+  - intent: show_phone
     examples: |
       - Show the phone number of a contact
       - Display contact's phone
@@ -53,7 +53,7 @@ nlu:
       - Display the phone number
       - Get phone details for a contact
 
-  - intent: show all
+  - intent: show_all
     examples: |
       - Show all contacts
       - Display all contact entries
