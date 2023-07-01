@@ -1,4 +1,4 @@
-import memory
+from your_simple_helper import memory
 import unittest
 import tempfile
 import os
