@@ -1,18 +1,13 @@
 
 
-from commands import get_command, END_STRING,greetings
+import warnings
+from commands import get_command, greetings
 from string_parser_ai import parse_input_get_cmd 
 from open_ai_input_assistent import analize_input_activate_func,activate_openai
 from commands import get_command_input
-from cryptography.fernet import Fernet
-from my_secrets import KEY,OPENAI_KEY_ENCRYPTED
-
-def crypt_key():
-    fernet = Fernet(KEY)
-    return fernet.decrypt(OPENAI_KEY_ENCRYPTED)
 
 def main():
-    activate_openai(crypt_key().decode())
+    activate_openai()
     print(greetings())
     while True:
         input_string = get_command_input()
@@ -22,10 +17,11 @@ def main():
             if len(command['arguments']) > 0:
                 print(analize_input_activate_func(command, input_string))
                 input_string = get_command_input()
-                list(input_string.split(','))
+                arguments = list(input_string.split(','))
                 cmd_func = get_command(command['id'])
-                cmd_func(*list)
-            if command["name"] == 'exit':
+                result = cmd_func["func"](*arguments)
+                print(result) if result else None
+            if command["name"] == 'ending':
                 print(analize_input_activate_func(command))
                 break
             else:

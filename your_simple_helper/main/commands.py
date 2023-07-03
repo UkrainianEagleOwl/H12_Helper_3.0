@@ -105,4 +105,4 @@ commands = [
     ]
 
 def get_command(id):
-    return list(filter(lambda cmd: cmd["id"] == id, commands))[0]["func"]
+    return list(filter(lambda cmd: cmd["id"] == id, commands))[0]
